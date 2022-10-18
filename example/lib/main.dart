@@ -1,4 +1,4 @@
-import 'package:fivesdk_example/five_ad.dart';
+import 'package:fivesdk/widget/five_ad.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
