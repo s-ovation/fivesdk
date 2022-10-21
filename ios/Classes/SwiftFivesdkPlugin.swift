@@ -4,11 +4,13 @@ import FiveAd
 
 public class SwiftFivesdkPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "fivesdk", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "jp.sovation.fivesdk.fivesdk", binaryMessenger: registrar.messenger())
         let instance = SwiftFivesdkPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         
-        let factory = FiveAdViewFactory(messenger: registrar.messenger())
+        let adManager = FiveAdManager(channel: channel)
+        
+        let factory = FiveAdViewFactory(messenger: registrar.messenger(), adManager: adManager)
         registrar.register(factory, withId: "five-ad-view")
     }
     

@@ -43,12 +43,25 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
         home: Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Five Ad Sample'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(children: [
+          const Text("ad start"),
+          FiveAd(
+            slotId: "badSlotID1",
+            width: 320,
+            height: 50,
+          ),
+          const Text("ad end"),
+          FiveAd(
+            slotId: "badSlotID2",
+            width: 320,
+            height: 50,
+          ),
           FiveAd(
             slotId: slotId,
             width: 320,

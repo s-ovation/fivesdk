@@ -1,3 +1,5 @@
+import 'package:fivesdk/five_ad_manager.dart';
+
 import 'fivesdk_platform_interface.dart';
 
 class Fivesdk {
@@ -9,7 +11,5 @@ class Fivesdk {
     );
   }
 
-  static Future<String?> healthCheck(String name) {
-    return FivesdkPlatform.instance.healthCheck(name);
-  }
+  static FiveAdManager get adManager => FivesdkPlatform.instance.adManager;
 }

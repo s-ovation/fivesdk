@@ -1,18 +1,16 @@
 package jp.sovation.fivesdk.fivesdk
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.five_corp.ad.*
 import io.flutter.plugin.platform.PlatformView
 
-
-internal class FiveAdView(context: Context, id: Int, creationParams: Map<String?, Any?>?) : PlatformView, FiveAdLoadListener {
-    companion object {
-        const val TAG = "FiveAdView"
-    }
-
+/**
+ * Five広告のビュークラス
+ */
+internal class FiveAdView(context: Context, id: Int, private val adManager: FiveAdManager, creationParams: Map<String?, Any?>?) : PlatformView, FiveAdLoadListener {
+    private val slotId: String?
     private val view: LinearLayout
     private val layout: FiveAdCustomLayout
 
@@ -33,7 +31,7 @@ internal class FiveAdView(context: Context, id: Int, creationParams: Map<String?
         val metrics = context.resources.displayMetrics
         val width = (widthDp * metrics.density).toInt()
 
-        val slotId = creationParams?.get("slotId") as String?
+        slotId = creationParams?.get("slotId") as String?
 
         // 広告のコンテナとなるビュー
         view = LinearLayout(context);
@@ -44,12 +42,20 @@ internal class FiveAdView(context: Context, id: Int, creationParams: Map<String?
         layout.loadAdAsync()
     }
 
+    // 広告が読み込まれた
     override fun onFiveAdLoad(ad: FiveAdInterface) {
-        Log.d("fivead", "success")
+        fivesdklogger("ad loaded successfully")
         view.addView(layout)
+        if( this.slotId != null ){
+            adManager.onAdLoaded(this.slotId)
+        }
     }
 
+    // 広告の読み込みに失敗
     override fun onFiveAdLoadError(fiveAdInterface: FiveAdInterface, errorCode: FiveAdErrorCode) {
-        Log.d(TAG, "onFiveAdError: slotId = " + fiveAdInterface.getSlotId().toString() + ", errorCode = " + errorCode)
+        fivesdklogger("onFiveAdError: slotId = " + fiveAdInterface.getSlotId().toString() + ", errorCode = " + errorCode)
+        if( this.slotId != null ){
+            adManager.onAdLoadError(this.slotId, errorCode);
+        }
     }
 }

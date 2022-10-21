@@ -1,3 +1,5 @@
+import 'package:fivesdk/fivesdk.dart';
+import 'package:fivesdk/fivesdk_common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,36 +19,100 @@ class FiveAdNativeParams {
   }
 }
 
+/// 広告読み込み成功のリスナー
+typedef FiveAdLoadedListener = VoidCallback;
+
+/// 広告読み込みエラーのリスナー
+typedef FiveAdLoadErrorListener = Function(FiveAdLoadError err);
+
+class Ad {
+  Ad();
+
+  FiveAdLoadErrorListener? loadErrorListener;
+  FiveAdLoadedListener? loadedListener;
+}
+
 ///
 /// Five(LINE)広告
 ///
-class FiveAd extends StatelessWidget {
-  // This is used in the platform side to register the view.
+class FiveAd extends StatefulWidget {
   static String viewType = 'five-ad-view';
 
   final String slotId;
   final int width;
   final int height;
 
-  const FiveAd(
-      {super.key,
-      required this.slotId,
-      required this.width,
-      required this.height});
+  final ad = Ad();
+
+  FiveAd({
+    super.key,
+    required this.slotId,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  State<FiveAd> createState() => _FiveAdState();
+
+  /// 広告の読み込みが成功
+  onAdLoaded() {
+    debugPrint("ad loaded successfully: $slotId");
+  }
+
+  /// 広告の読み込みが失敗
+  onAdLoadError(FiveAdLoadError err) {
+    debugPrint("ad loaded error: $err");
+    if (ad.loadErrorListener != null) {
+      ad.loadErrorListener!(err);
+    }
+  }
+}
+
+class _FiveAdState extends State<FiveAd> {
+  bool enabled = true;
+
+  @override
+  void initState() {
+    // 広告マネージャに登録
+    Fivesdk.adManager.addAd(widget);
+
+    widget.ad.loadedListener = (() {
+      setState(() {
+        enabled = true;
+      });
+    });
+
+    widget.ad.loadErrorListener = (err) {
+      setState(() {
+        enabled = false;
+      });
+    };
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    Fivesdk.adManager.removeAd(widget);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("slotId: $slotId");
+    debugPrint("slotId: ${widget.slotId}");
 
     return LayoutBuilder(builder: (context, constraint) {
       // ネイティブ側に渡すパラメータ
       final widthDp = (constraint.biggest.width).toInt();
 
       final params =
-          FiveAdNativeParams(widthDp: widthDp, slotId: slotId).encode();
-      return AspectRatio(
-        aspectRatio: width / height,
-        child: _getNativeAdView(params),
+          FiveAdNativeParams(widthDp: widthDp, slotId: widget.slotId).encode();
+      return SizedBox(
+        height: enabled ? null : 0,
+        child: AspectRatio(
+          aspectRatio: widget.width / widget.height,
+          child: _getNativeAdView(params),
+        ),
       );
     });
   }
@@ -56,14 +122,14 @@ class FiveAd extends StatelessWidget {
     switch (defaultTargetPlatform) {
       case TargetPlatform.iOS:
         return UiKitView(
-          viewType: viewType,
+          viewType: FiveAd.viewType,
           layoutDirection: TextDirection.ltr,
           creationParams: params,
           creationParamsCodec: const StandardMessageCodec(),
         );
       case TargetPlatform.android:
         return AndroidView(
-          viewType: viewType,
+          viewType: FiveAd.viewType,
           layoutDirection: TextDirection.ltr,
           creationParams: params,
           creationParamsCodec: const StandardMessageCodec(),

@@ -1,3 +1,4 @@
+import 'package:fivesdk/five_ad_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -7,22 +8,16 @@ import 'fivesdk_platform_interface.dart';
 class MethodChannelFivesdk extends FivesdkPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('fivesdk');
+  final methodChannel = const MethodChannel('jp.sovation.fivesdk.fivesdk');
 
-  @override
-  Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  late final FiveAdManager _adManager;
+
+  MethodChannelFivesdk() {
+    _adManager = FiveAdManager(methodChannel);
   }
 
   @override
-  Future<String?> healthCheck(String name) async {
-    final msg = await methodChannel.invokeMethod<String>('healthCheck', {
-      "name": name,
-    });
-    return msg;
-  }
+  FiveAdManager get adManager => _adManager;
 
   @override
   Future<void> initialize({required String appId, required bool isTest}) async {

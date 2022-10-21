@@ -25,21 +25,22 @@ class FivesdkPlugin : FlutterPlugin, MethodCallHandler , ActivityAware {
     private lateinit var activity : Activity
     private lateinit var context : Context
 
+    private lateinit var adManager: FiveAdManager
+
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "fivesdk")
+        channel = MethodChannel(binding.binaryMessenger, "jp.sovation.fivesdk.fivesdk")
         channel.setMethodCallHandler(this)
 
         context = binding.applicationContext
 
+        adManager = FiveAdManager(channel)
+
         binding.platformViewRegistry
-                .registerViewFactory("five-ad-view", FiveAdViewFactory())
+                .registerViewFactory("five-ad-view", FiveAdViewFactory(adManager))
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == "healthCheck") {
-            val name = call.argument<String>("name");
-            result.success("Hello $name");
-        } else if( call.method == "initialize" ){
+        if( call.method == "initialize" ){
             // FiveAd SDKの初期化
 
             // テストモードをデフォルトとする

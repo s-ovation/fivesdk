@@ -1,3 +1,4 @@
+import 'package:fivesdk/five_ad_manager.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'fivesdk_method_channel.dart';
@@ -23,13 +24,7 @@ abstract class FivesdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
-  Future<String?> healthCheck(String name) {
-    throw UnimplementedError();
-  }
+  FiveAdManager get adManager => throw UnimplementedError();
 
   Future<void> initialize({required String appId, required bool isTest}) {
     throw UnimplementedError();
