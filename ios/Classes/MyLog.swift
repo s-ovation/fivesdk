@@ -2,8 +2,6 @@
 //  MyLog.swift
 //  fivesdk
 //
-//  Created by Kei Oikawa on 2022/10/11.
-//
 
 import Foundation
 
