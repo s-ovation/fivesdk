@@ -64,6 +64,7 @@ class FiveAdView: NSObject, FlutterPlatformView, FADLoadDelegate {
         self.adManager = adManager
         self.adCustomLayout = nil
         self._view = UIView()
+        self._view.clipsToBounds = true // 親のサイズが小さくなったら広告が消えるように
         self.slotId = ""
         super.init()
 

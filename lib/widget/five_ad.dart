@@ -57,6 +57,9 @@ class FiveAd extends StatefulWidget {
   /// 広告の読み込みが成功
   onAdLoaded() {
     debugPrint("ad loaded successfully: $slotId");
+    if (ad.loadedListener != null) {
+      ad.loadedListener!();
+    }
   }
 
   /// 広告の読み込みが失敗
@@ -70,6 +73,7 @@ class FiveAd extends StatefulWidget {
 
 class _FiveAdState extends State<FiveAd> {
   bool enabled = true;
+  Widget? _nativeAd;
 
   @override
   void initState() {
@@ -107,11 +111,13 @@ class _FiveAdState extends State<FiveAd> {
 
       final params =
           FiveAdNativeParams(widthDp: widthDp, slotId: widget.slotId).encode();
+
+      _nativeAd ??= _getNativeAdView(params);
       return SizedBox(
         height: enabled ? null : 0,
         child: AspectRatio(
           aspectRatio: widget.width / widget.height,
-          child: _getNativeAdView(params),
+          child: _nativeAd,
         ),
       );
     });
