@@ -1,0 +1,29 @@
+PODS:
+  - FiveAd (2.4.20220722)
+  - fivesdk (0.0.1):
+    - FiveAd
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - fivesdk (from `.symlinks/plugins/fivesdk/ios`)
+  - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  trunk:
+    - FiveAd
+
+EXTERNAL SOURCES:
+  fivesdk:
+    :path: ".symlinks/plugins/fivesdk/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  FiveAd: 1b9182c2c4cfd732aab759f88c924db9feceb1ea
+  fivesdk: 57153e963fdde2089112f90c9a36fc11c6e08ec7
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+
+PODFILE CHECKSUM: 4a424e7b4d2a38c363f428285659a2dff177c2dc
+
+COCOAPODS: 1.11.3
